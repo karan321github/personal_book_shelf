@@ -1,11 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import Book from "./components/Book";
+import axios from "axios";
 
 const App = () => {
-  return (
-    <div>
-      App component
-    </div>
-  )
-}
+  const [input, setInput] = useState("");
+  const [result, setResults] = useState([]);
 
-export default App
+  const handleOnChange = (e) => {
+    setInput(e.target.value);
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://openlibrary.org/search.json?q=${input}&limit=10&page=1`
+        );
+        console.log(response.data);
+        setResults(response.data.docs);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    if (input !== "") {
+      fetchData();
+    }
+  }, [input]);
+  return (
+    <div className="conatiner flex flex-col items-center  ">
+      <input
+        className="border-2 border-solid border-black my-2 p-2"
+        placeholder="Search your favourite book"
+        type="text"
+        onChange={handleOnChange}
+        value={input}
+      />
+      <ul>
+      {result.map((result, index) => (
+          <li key={index}>{result.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
