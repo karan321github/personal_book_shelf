@@ -5,9 +5,15 @@ import axios from "axios";
 const App = () => {
   const [input, setInput] = useState("");
   const [result, setResults] = useState([]);
+  const [favourite, setFavourite] = useState([]);
 
   const handleOnChange = (e) => {
     setInput(e.target.value);
+  };
+
+  const addToFavourite = (book) => {
+    setFavourite([...favourite, book]);
+    console.log(favourite);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -27,18 +33,25 @@ const App = () => {
   }, [input]);
   return (
     <div className="conatiner flex flex-col items-center  ">
-      <input
-        className="border-2 border-solid border-black my-2 p-2"
+      <input 
+        className="border-2 border-solid border-black rounded-lg my-2 p-2"
         placeholder="Search your favourite book"
         type="text"
         onChange={handleOnChange}
         value={input}
       />
-      <ul>
-      {result.map((result, index) => (
-          <li key={index}>{result.title}</li>
+      <div className="grid grid-cols-3 gap-4">
+        {result.map((result, index) => (
+          <>
+            <Book
+              className="m-2"
+              results={result}
+              key={index}
+              addToFavourite={addToFavourite}
+            />
+          </>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
